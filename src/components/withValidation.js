@@ -25,7 +25,7 @@ const errorTexts = {
 const rules = {
     firstname: {
         minLength: 1,
-        maxLength: 710,
+        maxLength: 10,
         pattern: /^[a-zA-Z0-9 .-]*$/
     },
     lastname: {
