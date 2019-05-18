@@ -1,6 +1,56 @@
 import React, { Component } from 'react'
 import withValidation from './withValidation';
 
+const errorTexts = {
+    default: {
+        empty: "Field should not be empty",
+        tooShort: "Value length is short",
+        tooLong: "Value's length is too long",
+        invalidCharacters: "Value having invalid charactrs"
+    },
+    firstname: {
+        empty: "Firstname should not be empty",
+        tooLong: "Firstname should be less than 10 characters",
+    },
+    lastname: {
+        empty: "Lastname should not be empty"
+    },
+    password: {
+        empty: "Password should not be empty"
+    },
+    email: {
+        empty: "Email should not be empty"
+    }
+};
+
+const rules = {
+    firstname: {
+        minLength: 1,
+        maxLength: 10,
+        pattern: /^[a-zA-Z0-9 .-]*$/
+    },
+    lastname: {
+        minLength: 1,
+        maxLength: 70,
+        pattern: /^[a-zA-Z0-9 .-]*$/
+    },
+    password: {
+        minLength: 1,
+        maxLength: 70,
+        pattern: /^[a-zA-Z0-9 .-]*$/
+    },
+    email: {
+        minLength: 1,
+        maxLength: 70,
+        pattern: /^[a-zA-Z0-9 .-]*$/
+    }
+};
+
+const customConfig = {
+    onDirectActions: [],
+    onBlurActions: ['empty', 'tooShort', 'tooLong', 'invalidCharacters'],
+    default: "onBlurActions"
+}
 class FormComp extends Component {
     constructor(props) {
         super(props);
@@ -36,7 +86,7 @@ class FormComp extends Component {
                     onChange={(e) => this.handleOnChange(e)}
                     onBlur={(e) => this.props.handleOnBlur(e.target.name, this.state)}
                 />
-                <div className="error-message">{this.props.error.firstname}</div>
+                <div className="error-message">{this.props.error.firstname.invalid}</div>
             </div>
             <div>
                 <label>Last Name: </label><br />
@@ -48,7 +98,7 @@ class FormComp extends Component {
                     onChange={(e) => this.handleOnChange(e)}
                     onBlur={(e) => this.props.handleOnBlur(e.target.name, this.state)}
                 />
-                <div className="error-message">{this.props.error.lastname}</div>
+                <div className="error-message">{this.props.error.lastname.invalid}</div>
             </div>
             <div>
                 <label>Password: </label><br />
@@ -60,7 +110,7 @@ class FormComp extends Component {
                     onChange={(e) => this.handleOnChange(e)}
                     onBlur={(e) => this.props.handleOnBlur(e.target.name, this.state)}
                 />
-                <div className="error-message">{this.props.error.password}</div>
+                <div className="error-message">{this.props.error.password.invalid}</div>
             </div>
             <div>
                 <label>Email: </label><br />
@@ -72,7 +122,7 @@ class FormComp extends Component {
                     onChange={(e) => this.handleOnChange(e)}
                     onBlur={(e) => this.props.handleOnBlur(e.target.name, this.state)}
                 />
-                <div className="error-message">{this.props.error.email}</div>
+                <div className="error-message">{this.props.error.email.invalid}</div>
             </div>
             <div>
                 <button 
@@ -88,4 +138,4 @@ class FormComp extends Component {
     }
 }
 
-export default withValidation(FormComp);
+export default withValidation({rules, errorTexts, customConfig}, FormComp);

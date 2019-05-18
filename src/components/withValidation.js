@@ -1,50 +1,5 @@
 import React, {Component} from 'react';
 
-const errorTexts = {
-    default: {
-        empty: "Field should not be empty",
-        tooShort: "Value length is short",
-        tooLong: "Value's length is too long",
-        invalidCharacters: "Value having invalid charactrs"
-    },
-    firstname: {
-        empty: "Firstname should not be empty",
-        tooLong: "Firstname should be less than 10 characters",
-    },
-    lastname: {
-        empty: "Lastname should not be empty"
-    },
-    password: {
-        empty: "Password should not be empty"
-    },
-    email: {
-        empty: "Email should not be empty"
-    }
-};
-
-const rules = {
-    firstname: {
-        minLength: 1,
-        maxLength: 10,
-        pattern: /^[a-zA-Z0-9 .-]*$/
-    },
-    lastname: {
-        minLength: 1,
-        maxLength: 70,
-        pattern: /^[a-zA-Z0-9 .-]*$/
-    },
-    password: {
-        minLength: 1,
-        maxLength: 70,
-        pattern: /^[a-zA-Z0-9 .-]*$/
-    },
-    email: {
-        minLength: 1,
-        maxLength: 70,
-        pattern: /^[a-zA-Z0-9 .-]*$/
-    }
-};
-
 class Validator {
     constructor(_ref) {
          console.log(_ref);
@@ -70,29 +25,25 @@ class Validator {
     }
 }
 
-const withValidation = (WrappedComponent) => {
+const withValidation = (config, WrappedComponent) => {
     return class WithValidator extends Component {
         constructor(props) {
             super(props);
        
-            const v = new Validator(WrappedComponent);
-            
             this.state = {
-                error: {
-                    firstname: null,
-                    lastname: null,
-                    password: null,
-                    email: null,
-                }
+                error: config.rules
             };
         }
 
         handleOnBlur = (name = 'default', stateProps) => {
             const errorObj = Object.assign({}, this.state.error);
+            const errorTexts = config.errorTexts;
+            const rules = config.rules;
             
             const isValid = Validator.validate({value: stateProps[name].trim(), state: stateProps, rules: rules[name]});
+            errorObj[name].invalid = false;
             if (!!isValid) {
-                errorObj[name] = errorTexts[name][isValid] ? errorTexts[name][isValid] : errorTexts.default[isValid];
+                errorObj[name].invalid = errorTexts[name][isValid] ? errorTexts[name][isValid] : errorTexts.default[isValid];
             }
     
             this.setState({
