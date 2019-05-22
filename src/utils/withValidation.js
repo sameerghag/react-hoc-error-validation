@@ -1,10 +1,7 @@
 import React, {Component} from 'react';
+import {errorTexts, rules, customConfig} from './basicValidationConfig';
 
 class Validator {
-    constructor(_ref) {
-         console.log(_ref);
-    }
-
     static validate({value, state, rules}) {
         let errorStatus = '';
         if (!value.trim()) {
@@ -29,21 +26,23 @@ const withValidation = (config, WrappedComponent) => {
     return class WithValidator extends Component {
         constructor(props) {
             super(props);
-       
+            
+            this.errorTexts = Object.assign({}, config.errorTexts, errorTexts);
+            this.rules = Object.assign({}, config.rules, rules);
+            this.customConfig = config.customConfig ? config.customConfig : customConfig;
+            
             this.state = {
-                error: config.rules
+                error: this.rules
             };
         }
 
         handleOnBlur = (name = 'default', stateProps) => {
             const errorObj = Object.assign({}, this.state.error);
-            const errorTexts = config.errorTexts;
-            const rules = config.rules;
             
-            const isValid = Validator.validate({value: stateProps[name].trim(), state: stateProps, rules: rules[name]});
+            const isValid = Validator.validate({value: stateProps[name].trim(), state: stateProps, rules: this.rules[name]});
             errorObj[name].invalid = false;
             if (!!isValid) {
-                errorObj[name].invalid = errorTexts[name][isValid] ? errorTexts[name][isValid] : errorTexts.default[isValid];
+                errorObj[name].invalid = this.errorTexts[name] && this.errorTexts[name][isValid] ? this.errorTexts[name][isValid] : this.errorTexts.default[isValid];
             }
     
             this.setState({
